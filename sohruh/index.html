@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For you Ray💖</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #1e3c72 100%);
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Landing Section */
+        .landing-section {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .word-container {
+            text-align: center;
+            position: relative;
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .word {
+            font-size: 3.2rem;
+            color: #ffffff;
+            font-weight: 300;
+            letter-spacing: 2px;
+            text-shadow: 0 4px 8px rgba(0,0,0,0.4);
+            position: absolute;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s ease-in-out, transform 0.8s ease-in-out;
+        }
+
+        .word.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .enter-button {
+            margin-top: 150px;
+            padding: 18px 50px;
+            font-size: 1.3rem;
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: #ffffff;
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 400;
+            letter-spacing: 1px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s ease-in-out;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+
+        .enter-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(0,0,0,0.4);
+            background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%);
+            border-color: rgba(255,255,255,0.3);
+        }
+
+        .enter-button.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Videos Section */
+        .videos-section {
+            display: none;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #1e3c72 100%);
+            padding: 30px;
+        }
+
+        .videos-section.active {
+            display: block;
+        }
+
+        .back-button {
+            padding: 12px 25px;
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: #ffffff;
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 400;
+            letter-spacing: 0.5px;
+            margin-bottom: 30px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .back-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+            background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%);
+        }
+
+        .video-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .video-item {
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            border-radius: 12px;
+            padding: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            display: flex;
+            gap: 25px;
+            align-items: center;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .video-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.25);
+            background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+        }
+
+        .video-thumbnail {
+            width: 120px;
+            height: 90px;
+            border-radius: 10px;
+            object-fit: cover;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+
+        .video-info {
+            flex: 1;
+        }
+
+        .video-title {
+            font-size: 1.4rem;
+            font-weight: 500;
+            color: #2c3e50;
+            margin-bottom: 12px;
+            letter-spacing: 0.5px;
+        }
+
+        .video-description {
+            color: #5a6c7d;
+            line-height: 1.6;
+            font-size: 0.95rem;
+            font-weight: 400;
+        }
+
+        .video-player {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        .video-player.active {
+            display: block;
+            opacity: 1;
+        }
+
+        .video-player iframe {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90%;
+            height: 80%;
+            max-width: 1200px;
+            border: none;
+            border-radius: 10px;
+        }
+
+        .video-player-back {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            z-index: 1001;
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+        }
+
+        /* Hidden class */
+        .hidden {
+            display: none !important;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .word {
+                font-size: 2.2rem;
+                letter-spacing: 1px;
+            }
+            
+            .enter-button {
+                margin-top: 100px;
+                padding: 15px 35px;
+                font-size: 1.1rem;
+            }
+            
+            .videos-section {
+                padding: 20px;
+                overflow-y: auto;
+            }
+            
+            .video-list {
+                display: flex;
+                flex-direction: column;
+                gap: 20px;
+                max-width: 100%;
+                padding: 20px;
+            }
+            
+            .video-item {
+                padding: 20px;
+                display: flex;
+                gap: 20px;
+                align-items: center;
+            }
+            
+            .video-thumbnail {
+                width: 120px;
+                height: 90px;
+                border-radius: 10px;
+                object-fit: cover;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            }
+            
+            .video-info {
+                flex: 1;
+            }
+            
+            .video-title {
+                font-size: 1.3rem;
+                font-weight: 500;
+                color: #2c3e50;
+                margin-bottom: 10px;
+                letter-spacing: 0.5px;
+            }
+            
+            .video-description {
+                color: #5a6c7d;
+                line-height: 1.6;
+                font-size: 0.9rem;
+                font-weight: 400;
+            }
+            
+            .back-button {
+                padding: 10px 20px;
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .word {
+                font-size: 1.8rem;
+                padding: 0 20px;
+            }
+            
+            .enter-button {
+                margin-top: 80px;
+                padding: 12px 30px;
+                font-size: 1rem;
+            }
+            
+            .video-item {
+                padding: 15px;
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+            
+            .video-thumbnail {
+                width: 100%;
+                height: 200px;
+                max-width: 300px;
+            }
+            
+            .video-title {
+                font-size: 1.2rem;
+            }
+            
+            .video-description {
+                font-size: 0.85rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Landing Section -->
+    <section class="landing-section" id="landingSection">
+        <div class="word-container">
+            <div class="word" data-word="1">нажимай по одному</div>
+            <div class="word" data-word="2">С твоим днем жанм😘</div>
+            <div class="word" data-word="3">Ты даришь мне улыбку😁</div>
+            <div class="word" data-word="4">Уже почти год наших отношений🤩</div>
+            <div class="word" data-word="5">И я тебя люблю 💖</div>
+            <button class="enter-button" id="enterButton">нажми)</button>
+        </div>
+    </section>
+    <!-- Videos Section -->
+    <section class="videos-section" id="videosSection">
+        <button class="back-button" id="mainBackButton">назад</button>
+        
+        <div class="video-list" id="videoList">
+            <div class="video-item" data-video="1">
+                <img src="1.jpg" alt="Video 1" class="video-thumbnail">
+                <div class="video-info">
+                    <div class="video-title">Это ты ждешь меня после работы с кофе😂</div>
+                    <div class="video-description">17.09.2025</div>
+                </div>
+            </div>
+            <div class="video-item" data-video="2">
+                <img src="2.jpg" alt="Video 2" class="video-thumbnail">
+                <div class="video-info">
+                    <div class="video-title">Здесь я сделал тебе сюрприз и ужастная причестка😂</div>
+                    <div class="video-description">30.05.2025</div>
+                </div>
+            </div>
+            <div class="video-item" data-video="3">
+                <img src="3.jpg" alt="Video 3" class="video-thumbnail">
+                <div class="video-info">
+                    <div class="video-title">Наш обычный день после интера🥹</div>
+                    <div class="video-description">25.06.2025</div>
+                </div>
+            </div>
+            <div class="video-item" data-video="4">
+                <img src="4.jpg" alt="Video 4" class="video-thumbnail">
+                <div class="video-info">
+                    <div class="video-title">Когда уже прощаемся(</div>
+                    <div class="video-description">конкретное время не помню😅. У меня еще много видео но это уже когда у нас будет годовщина)</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="video-player" id="videoPlayer">
+            <button class="back-button video-player-back" id="videoPlayerBack">Посмотреть другие видео</button>
+            <video id="localVideo" controls style="width: 100%; height: 100%; object-fit: contain;">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+    </section>
+
+    <script>
+        // Landing Section Logic
+        const landingSection = document.getElementById('landingSection');
+        const words = document.querySelectorAll('.word');
+        const enterButton = document.getElementById('enterButton');
+        let currentWordIndex = 0;
+        let currentUser = null;
+
+        // Show first word initially
+        function showWord(index) {
+            words.forEach(word => word.classList.remove('active'));
+            if (index < words.length) {
+                words[index].classList.add('active');
+            }
+        }
+
+        // Initialize with first word
+        showWord(0);
+
+        // Check for existing session
+        function checkSession() {
+            const sessionToken = localStorage.getItem('session_token');
+            if (sessionToken) {
+                // Verify session with server
+                fetch('api.php?action=verify_session', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ session_token: sessionToken })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        currentUser = { id: data.user_id };
+                    }
+                });
+            }
+        }
+
+        // Track video viewing
+        function trackVideoView(videoId) {
+            const data = { video_id: videoId };
+            if (currentUser) {
+                data.user_id = currentUser.id;
+            }
+            
+            fetch('api.php?action=track_video', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+        }
+
+        // Handle landing section clicks
+        landingSection.addEventListener('click', function(e) {
+            // Don't trigger if clicking on the enter button
+            if (e.target === enterButton) {
+                return;
+            }
+
+            currentWordIndex++;
+            
+            if (currentWordIndex < words.length) {
+                showWord(currentWordIndex);
+            } else if (currentWordIndex === words.length) {
+                // Show enter button after last word
+                enterButton.classList.add('show');
+            }
+            // Don't allow clicking beyond this point
+        });
+
+        // Handle enter button click
+        enterButton.addEventListener('click', function(e) {
+            e.stopPropagation();
+            landingSection.style.display = 'none';
+            document.getElementById('videosSection').classList.add('active');
+        });
+
+        // Videos Section Logic
+        const videosSection = document.getElementById('videosSection');
+        const videoList = document.getElementById('videoList');
+        const videoPlayer = document.getElementById('videoPlayer');
+        const localVideo = document.getElementById('localVideo');
+        const mainBackButton = document.getElementById('mainBackButton');
+        const videoPlayerBack = document.getElementById('videoPlayerBack');
+        const videoItems = document.querySelectorAll('.video-item');
+
+        // Local video file paths - UPDATE THESE WITH YOUR ACTUAL VIDEO FILES
+        const videoFiles = {
+            1: '1.mp4',
+            2: '2.mp4',
+            3: '3.mp4',
+            4: '4.mp4'
+        };
+
+        // Function to generate video thumbnail from the first frame
+        function generateVideoThumbnail(videoFile, videoId) {
+            const video = document.createElement('video');
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
+            video.src = videoFile;
+            video.currentTime = 1; // Get frame at 1 second
+            video.autoplay = false;
+            video.muted = true;
+            video.playsInline = true;
+
+            video.addEventListener('loadeddata', function() {
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                context.drawImage(video, 0, 0, canvas.width, canvas.height);
+                const dataURL = canvas.toDataURL('image/jpeg');
+                document.querySelector(`.video-item[data-video="${videoId}"] .video-thumbnail`).src = dataURL;
+            });
+            video.load();
+        }
+
+        // Generate thumbnails for all videos
+        for (const videoId in videoFiles) {
+            generateVideoThumbnail(videoFiles[videoId], videoId);
+        }
+
+        // Handle video item clicks
+        videoItems.forEach(item => {
+            item.addEventListener('click', function() {
+                const videoId = this.dataset.video;
+                localVideo.src = videoFiles[videoId];
+                videoPlayer.classList.add('active');
+                localVideo.play();
+                
+                // Track video viewing
+                trackVideoView(parseInt(videoId));
+            });
+        });
+
+        // Handle video player back button
+        videoPlayerBack.addEventListener('click', function() {
+            videoPlayer.classList.remove('active');
+            localVideo.pause();
+            setTimeout(() => {
+                localVideo.src = '';
+            }, 300);
+        });
+
+        // Handle main back button
+        mainBackButton.addEventListener('click', function() {
+            videosSection.classList.remove('active');
+            landingSection.style.display = 'flex';
+            // Reset landing section
+            currentWordIndex = 0;
+            showWord(0);
+            enterButton.classList.remove('show');
+        });
+
+        // Initialize session check
+        checkSession();
+    </script>
+</body>
+</html>
